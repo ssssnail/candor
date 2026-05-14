@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code Review - Candor</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Loading State -->
+    <div id="loading-view" class="view" style="display: flex; align-items: center; justify-content: center; min-height: 100vh;">
+      <div class="loading">
+        <div class="spinner"></div>
+        <span data-i18n="loading">加载中…</span>
+      </div>
+    </div>
+
+    <!-- Submit Form View -->
+    <div id="submit-view" class="submit-container hidden">
+      <div class="submit-header">
+        <p class="eyebrow" data-i18n="eyebrow">匿名反馈</p>
+        <h1>
+          <span data-i18n="h1">发一句匿名话</span>
+          <span class="muted" data-i18n="h1Sub">让你的队友知道</span>
+        </h1>
+        <p class="sub" data-i18n="lead">一句真心话，胜过十句客套。</p>
+      </div>
+
+      <!-- The One Thing Section -->
+      <div class="the-one-thing">
+        <p class="kicker" data-i18n="oneKicker">The One Thing</p>
+        <h2>
+          <span data-i18n="oneH">如果你是 TA 的 co-founder，</span>
+          <br>
+          <span data-i18n="oneH2">你最想推 TA 改的</span>
+          <em data-i18n="oneHEm">那一件</em>
+          <span data-i18n="oneH3">事是什么？</span>
+        </h2>
+        <textarea
+          id="feedback-text"
+          data-i18n-placeholder="onePlaceholder"
+          placeholder="可以真实，可以带梗，但别只说「加油」。真心话在这里最值钱。"
+          maxlength="2000"
+        ></textarea>
+        <div class="char-counter"><span id="char-count">0</span> / 2000</div>
+      </div>
+
+      <p class="warmup-hint" data-i18n="warmup">需要点灵感？下面的标签可选可不选。</p>
+
+      <!-- Strengths Section -->
+      <div class="tag-section">
+        <div class="tag-header">
+          <span class="tag-title">
+            <span class="dot mint"></span>
+            <span data-i18n="strengthsTitle">核心优势</span>
+          </span>
+          <span class="tag-hint" data-i18n="multi">可不选 · 可多选</span>
+        </div>
+        <div class="tag-grid" id="strengths-grid">
+          <button class="tag-btn mint" data-id="vision">
+            <div class="tag-label">👁️ Visionary (Altman Mode)</div>
+            <div class="tag-desc">看问题快人三步</div>
+          </button>
+          <button class="tag-btn mint" data-id="exec">
+            <div class="tag-label">🚀 Execution Beast</div>
+            <div class="tag-desc">产出快到让 AI 都想躺平</div>
+          </button>
+          <button class="tag-btn mint" data-id="first">
+            <div class="tag-label">🧠 First-Principles Master</div>
+            <div class="tag-desc">拆问题拆到原子级</div>
+          </button>
+          <button class="tag-btn mint" data-id="comm">
+            <div class="tag-label">📢 10x Communicator</div>
+            <div class="tag-desc">连 PM 都能一次听懂</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Suggestions Section -->
+      <div class="tag-section">
+        <div class="tag-header">
+          <span class="tag-title">
+            <span class="dot amber"></span>
+            <span data-i18n="suggestionsTitle">优化建议</span>
+          </span>
+          <span class="tag-hint" data-i18n="multi">可不选 · 可多选</span>
+        </div>
+        <div class="tag-grid" id="suggestions-grid">
+          <button class="tag-btn amber" data-id="async">
+            <div class="tag-label">⚡ Default to Async</div>
+            <div class="tag-desc">能 Slack 就别 Zoom</div>
+          </button>
+          <button class="tag-btn amber" data-id="ship">
+            <div class="tag-label">🎯 Break Analysis Paralysis</div>
+            <div class="tag-desc">70 分先 launch，迭代里改</div>
+          </button>
+          <button class="tag-btn amber" data-id="no">
+            <div class="tag-label">🛡️ Say No Like a Pro</div>
+            <div class="tag-desc">战略性拒绝，别被「好我来」淹没</div>
+          </button>
+          <button class="tag-btn amber" data-id="short">
+            <div class="tag-label">✂️ Write Shorter</div>
+            <div class="tag-desc">邮件砍一半，世界更清净</div>
+          </button>
+        </div>
+      </div>
+
+      <div class="submit-actions">
+        <button id="submit-btn" class="btn btn-primary" style="width: 100%;" disabled>
+          <span data-i18n="ship">Ship it 🚀</span>
+        </button>
+        <p class="privacy-note">
+          <span data-i18n="legal">原文直接送达，不署名，不记 IP。</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- Success View -->
+    <div id="success-view" class="submit-container hidden">
+      <div class="success-view">
+        <div class="success-icon">✅</div>
+        <h2 data-i18n="doneH1">你这句话，已经放到 TA 桌上了。</h2>
+        <p data-i18n="doneSub">原文送达。没人知道是你写的——除非你署了名。</p>
+
+        <!-- Feedback Preview Box -->
+        <div class="preview-box">
+          <p class="preview-label" data-i18n="doneSee">TA 会看到</p>
+          <pre id="preview-text" class="preview-text"></pre>
+        </div>
+
+        <div class="install-box">
+          <h3 data-i18n="installH">想知道别人眼中真实的你？</h3>
+          <p data-i18n="installP">创建你自己的 Repo，让真诚的反馈主动找上门——两次点击，遇见更好的自己。</p>
+          <button id="install-btn" class="btn btn-primary" data-i18n="installCta">创建我的 Repo →</button>
+          <p class="backup-link" id="backup-link"></p>
+        </div>
+
+        <button id="another-btn" class="btn btn-ghost" style="margin-top: 16px;" data-i18n="another">再写一条</button>
+      </div>
+    </div>
+
+    <!-- Error View -->
+    <div id="error-view" class="submit-container hidden">
+      <div class="error-view">
+        <div class="error-icon">⚠️</div>
+        <h2 data-i18n="errorTitle">出错了</h2>
+        <p id="error-message" data-i18n="errorInvalid">无效的链接</p>
+        <button id="retry-btn" class="btn btn-primary" data-i18n="retry">重试</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="submit.js"></script>
+</body>
+</html>
