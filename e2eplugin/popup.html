@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Candor.Box</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Loading State -->
+    <div id="loading-view" class="view">
+      <div class="loading">
+        <div class="spinner"></div>
+        <span data-i18n="loading">加载中…</span>
+      </div>
+    </div>
+
+    <!-- Main View -->
+    <div id="main-view" class="view hidden">
+      <header class="header">
+        <div class="logo">
+          <span class="logo-dot">●</span>
+          Candor<span class="logo-suffix">.</span>
+        </div>
+        <div class="header-actions">
+          <button id="lang-toggle" class="icon-btn" title="切换语言">中/EN</button>
+          <button id="refresh-btn" class="icon-btn" title="刷新">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+            </svg>
+          </button>
+          <button id="menu-btn" class="icon-btn" title="菜单">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Stats Bar -->
+      <div class="stats-bar">
+        <div class="stat">
+          <span class="stat-value" id="unread-count">0</span>
+          <span class="stat-label" data-i18n="unread">未读</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-value" id="total-count">0</span>
+          <span class="stat-label" data-i18n="total">总计</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-value" id="links-count">0</span>
+          <span class="stat-label" data-i18n="links">链接</span>
+        </div>
+      </div>
+
+      <!-- Share Section -->
+      <div class="share-section">
+        <div class="section-title">
+          <span data-i18n="shareTitle">分享收礼链接</span>
+          <button id="new-link-btn" class="btn-text" data-i18n="newLink">+ 新链接</button>
+        </div>
+        <div class="link-selector">
+          <select id="link-select">
+            <option value="" data-i18n="selectLink">选择链接...</option>
+          </select>
+        </div>
+        <div class="link-box">
+          <code id="link-display" class="link-url">—</code>
+          <button id="copy-link-btn" class="btn btn-primary btn-sm" data-i18n="copy">复制</button>
+        </div>
+        <div id="copy-toast" class="toast hidden" data-i18n="copied">已复制！</div>
+        <p class="link-hint" data-i18n="linkHint">任何人打开此链接都可以给你发送匿名反馈</p>
+      </div>
+
+      <!-- Feedback List -->
+      <div class="feedback-section">
+        <div class="section-header">
+          <span class="section-title" data-i18n="recentFeedback">最近反馈</span>
+          <div class="filter-btns">
+            <button class="filter-btn active" data-filter="all" data-i18n="all">全部</button>
+            <button class="filter-btn" data-filter="new" data-i18n="new">未读</button>
+          </div>
+        </div>
+
+        <ul id="feedback-list" class="feedback-list"></ul>
+
+        <div id="empty-state" class="empty-state hidden">
+          <div class="empty-icon">🎁</div>
+          <p data-i18n="emptyTitle">暂无反馈</p>
+          <p class="empty-sub" data-i18n="emptySub">分享你的链接，开始收礼物</p>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <span data-i18n="localOnly">数据仅存储在本地</span>
+        <span id="inbox-id" class="inbox-id"></span>
+      </footer>
+    </div>
+
+    <!-- Detail View -->
+    <div id="detail-view" class="view hidden">
+      <div class="detail-header">
+        <button id="back-btn" class="btn btn-ghost btn-sm">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          <span data-i18n="back">返回</span>
+        </button>
+        <div class="detail-actions">
+          <button id="reply-btn" class="btn btn-primary btn-sm" data-i18n="reply">回复</button>
+          <button id="delete-btn" class="btn btn-danger btn-sm" data-i18n="delete">删除</button>
+        </div>
+      </div>
+
+      <div class="detail-content">
+        <div id="detail-badge" class="detail-badge" style="display: none;">NEW</div>
+        <pre id="detail-text" class="detail-text"></pre>
+        <div id="detail-meta" class="detail-meta"></div>
+
+        <div id="replies-section" class="replies-section hidden">
+          <h4 data-i18n="replies">回复记录</h4>
+          <div id="replies-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reply Modal -->
+    <div id="reply-modal" class="modal hidden">
+      <div class="modal-overlay"></div>
+      <div class="modal-content">
+        <h4 data-i18n="replyTitle">回复反馈</h4>
+        <textarea id="reply-text" rows="4" data-i18n-placeholder="replyPlaceholder" placeholder="写下你的回复..."></textarea>
+        <div class="modal-actions">
+          <button id="cancel-reply" class="btn btn-ghost" data-i18n="cancel">取消</button>
+          <button id="confirm-reply" class="btn btn-primary" data-i18n="sendReply">发送回复</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Menu Modal -->
+    <div id="menu-modal" class="modal hidden">
+      <div class="modal-overlay"></div>
+      <div class="modal-content menu-content">
+        <h4 data-i18n="settings">设置</h4>
+        <div class="menu-item">
+          <span data-i18n="notifications">桌面通知</span>
+          <label class="toggle">
+            <input type="checkbox" id="notification-toggle" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="menu-divider"></div>
+        <button id="export-btn" class="menu-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+          </svg>
+          <span data-i18n="export">导出数据</span>
+        </button>
+        <button id="import-btn" class="menu-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+          </svg>
+          <span data-i18n="import">导入数据</span>
+        </button>
+        <div class="menu-divider"></div>
+        <button id="clear-btn" class="menu-btn danger">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+          </svg>
+          <span data-i18n="clearAll">清除所有数据</span>
+        </button>
+        <button id="close-menu" class="btn btn-ghost" style="margin-top: 16px; width: 100%;" data-i18n="close">关闭</button>
+      </div>
+    </div>
+
+    <!-- Hidden file input for import -->
+    <input type="file" id="import-file" accept=".json" style="display: none;">
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
