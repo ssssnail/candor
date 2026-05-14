@@ -19,10 +19,10 @@
     <!-- Submit Form View -->
     <div id="submit-view" class="submit-container hidden">
       <div class="submit-header">
-        <p class="eyebrow" data-i18n="eyebrow">Code Review</p>
+        <p class="eyebrow" data-i18n="eyebrow">匿名反馈</p>
         <h1>
-          <span data-i18n="h1">Reviewing</span>
-          <span class="muted" data-i18n="h1Sub">你的队友</span>
+          <span data-i18n="h1">发一句匿名话</span>
+          <span class="muted" data-i18n="h1Sub">让你的队友知道</span>
         </h1>
         <p class="sub" data-i18n="lead">一句真心话，胜过十句客套。</p>
       </div>
@@ -122,6 +122,12 @@
         <div class="success-icon">✅</div>
         <h2 data-i18n="doneH1">你这句话，已经放到 TA 桌上了。</h2>
         <p data-i18n="doneSub">原文送达。没人知道是你写的——除非你署了名。</p>
+
+        <!-- Feedback Preview Box -->
+        <div class="preview-box">
+          <p class="preview-label" data-i18n="doneSee">TA 会看到</p>
+          <pre id="preview-text" class="preview-text"></pre>
+        </div>
 
         <div class="install-box">
           <h3 data-i18n="installH">想知道别人眼中真实的你？</h3>

@@ -977,6 +977,34 @@ html, body {
   margin-bottom: 12px;
 }
 
+.preview-box {
+  padding: 16px;
+  background: var(--card);
+  border: 1px solid var(--mint);
+  border-radius: var(--radius);
+  text-align: left;
+  margin: 16px 0;
+  max-height: 150px;
+  overflow: auto;
+}
+
+.preview-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--mint);
+  margin-bottom: 8px;
+}
+
+.preview-text {
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: inherit;
+  margin: 0;
+}
+
 .backup-link {
   margin-top: 16px;
   font-size: 10px;
